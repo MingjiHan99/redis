@@ -1135,3 +1135,23 @@ void hrandfieldCommand(client *c) {
     hashTypeRandomElement(hash,hashTypeLength(hash),&ele,NULL);
     hashReplyFromListpackEntry(c, &ele);
 }
+
+void hbucntCommand(client *c) {
+    unsigned long length = ULONG_MAX;
+    robj *o;
+    if (c->argc == 2) {
+        if ((o = lookupKeyReadOrReply(c,c->argv[1],shared.null[c->resp])) == NULL ||
+        checkType(c,o,OBJ_HASH))
+        return;
+    }
+    if (o->encoding == OBJ_ENCODING_LISTPACK) {
+        addReplyError(c, "the listpack does not have bucket");
+        return ;
+    } 
+    
+    if (o->encoding == OBJ_ENCODING_HT) {
+        const dict* d_ptr = (const dict*)o->ptr;
+        length = dictSlots(d_ptr);
+    } 
+    addReplyLongLong(c, length);
+}

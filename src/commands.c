@@ -2565,6 +2565,10 @@ struct redisCommandArg HVALS_Args[] = {
 {0}
 };
 
+struct redisCommandArg HBUCNT_Args[] = {
+{"key",ARG_TYPE_KEY,0,NULL,NULL,NULL,CMD_ARG_NONE},
+{0}
+};
 /********** PFADD ********************/
 
 /* PFADD history */
@@ -7198,6 +7202,7 @@ struct redisCommand redisCommandTable[] = {
 {"hsetnx","Set the value of a hash field, only if the field does not exist","O(1)","2.0.0",CMD_DOC_NONE,NULL,NULL,COMMAND_GROUP_HASH,HSETNX_History,HSETNX_tips,hsetnxCommand,4,CMD_WRITE|CMD_DENYOOM|CMD_FAST,ACL_CATEGORY_HASH,{{NULL,CMD_KEY_RW|CMD_KEY_INSERT,KSPEC_BS_INDEX,.bs.index={1},KSPEC_FK_RANGE,.fk.range={0,1,0}}},.args=HSETNX_Args},
 {"hstrlen","Get the length of the value of a hash field","O(1)","3.2.0",CMD_DOC_NONE,NULL,NULL,COMMAND_GROUP_HASH,HSTRLEN_History,HSTRLEN_tips,hstrlenCommand,3,CMD_READONLY|CMD_FAST,ACL_CATEGORY_HASH,{{NULL,CMD_KEY_RO,KSPEC_BS_INDEX,.bs.index={1},KSPEC_FK_RANGE,.fk.range={0,1,0}}},.args=HSTRLEN_Args},
 {"hvals","Get all the values in a hash","O(N) where N is the size of the hash.","2.0.0",CMD_DOC_NONE,NULL,NULL,COMMAND_GROUP_HASH,HVALS_History,HVALS_tips,hvalsCommand,2,CMD_READONLY,ACL_CATEGORY_HASH,{{NULL,CMD_KEY_RO|CMD_KEY_ACCESS,KSPEC_BS_INDEX,.bs.index={1},KSPEC_FK_RANGE,.fk.range={0,1,0}}},.args=HVALS_Args},
+{"hbucnt", "Get the number of bucket in a hash", NULL, NULL,CMD_DOC_NONE, NULL, NULL, COMMAND_GROUP_HASH, NULL, NULL,hbucntCommand, 2, CMD_READONLY, ACL_CATEGORY_HASH, {{NULL, CMD_KEY_RO|CMD_KEY_ACCESS, KSPEC_BS_INDEX, .bs.index={1}, KSPEC_FK_RANGE,.fk.range={0,1,0}}}, .args=HBUCNT_Args},
 /* hyperloglog */
 {"pfadd","Adds the specified elements to the specified HyperLogLog.","O(1) to add every element.","2.8.9",CMD_DOC_NONE,NULL,NULL,COMMAND_GROUP_HYPERLOGLOG,PFADD_History,PFADD_tips,pfaddCommand,-2,CMD_WRITE|CMD_DENYOOM|CMD_FAST,ACL_CATEGORY_HYPERLOGLOG,{{NULL,CMD_KEY_RW|CMD_KEY_INSERT,KSPEC_BS_INDEX,.bs.index={1},KSPEC_FK_RANGE,.fk.range={0,1,0}}},.args=PFADD_Args},
 {"pfcount","Return the approximated cardinality of the set(s) observed by the HyperLogLog at key(s).","O(1) with a very small average constant time when called with a single key. O(N) with N being the number of keys, and much bigger constant times, when called with multiple keys.","2.8.9",CMD_DOC_NONE,NULL,NULL,COMMAND_GROUP_HYPERLOGLOG,PFCOUNT_History,PFCOUNT_tips,pfcountCommand,-2,CMD_READONLY|CMD_MAY_REPLICATE,ACL_CATEGORY_HYPERLOGLOG,{{"RW because it may change the internal representation of the key, and propagate to replicas",CMD_KEY_RW|CMD_KEY_ACCESS,KSPEC_BS_INDEX,.bs.index={1},KSPEC_FK_RANGE,.fk.range={-1,1,0}}},.args=PFCOUNT_Args},
